@@ -7,7 +7,7 @@ using CountryCurrencyAPI.Services;
 namespace CountryCurrencyAPI.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("countries")]
 public class CountriesController : ControllerBase
 {
     private readonly AppDbContext _context;

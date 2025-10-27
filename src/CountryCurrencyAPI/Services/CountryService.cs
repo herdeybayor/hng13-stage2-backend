@@ -110,7 +110,7 @@ public class CountryService : ICountryService
                 if (existingCountry != null)
                 {
                     // Update existing country
-                    existingCountry.Capital = countryData.Capital?.FirstOrDefault();
+                    existingCountry.Capital = countryData.Capital;
                     existingCountry.Region = countryData.Region;
                     existingCountry.Population = countryData.Population;
                     existingCountry.CurrencyCode = currencyCode;
@@ -125,7 +125,7 @@ public class CountryService : ICountryService
                     var newCountry = new Country
                     {
                         Name = countryData.Name,
-                        Capital = countryData.Capital?.FirstOrDefault(),
+                        Capital = countryData.Capital,
                         Region = countryData.Region,
                         Population = countryData.Population,
                         CurrencyCode = currencyCode,

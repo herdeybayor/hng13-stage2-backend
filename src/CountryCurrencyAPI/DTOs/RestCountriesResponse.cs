@@ -8,7 +8,7 @@ public class RestCountriesResponse
     public string? Name { get; set; }
 
     [JsonPropertyName("capital")]
-    public List<string>? Capital { get; set; }
+    public string? Capital { get; set; }
 
     [JsonPropertyName("region")]
     public string? Region { get; set; }
