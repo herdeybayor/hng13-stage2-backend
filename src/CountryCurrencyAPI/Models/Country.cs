@@ -23,11 +23,10 @@ public class Country
     public required long Population { get; set; }
 
     [MaxLength(10)]
-    public required string CurrencyCode { get; set; }
+    public string? CurrencyCode { get; set; }
 
-    [Required]
     [Column(TypeName = "decimal(18,6)")]
-    public required decimal ExchangeRate { get; set; }
+    public decimal? ExchangeRate { get; set; }
 
     [Column(TypeName = "decimal(20,2)")]
     public decimal? EstimatedGdp { get; set; }
