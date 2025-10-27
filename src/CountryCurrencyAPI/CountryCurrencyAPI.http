@@ -1,0 +1,6 @@
+@CountryCurrencyAPI_HostAddress = http://localhost:5011
+
+GET {{CountryCurrencyAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
