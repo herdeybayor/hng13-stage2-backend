@@ -482,3 +482,9 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Keep the cache directory but ignore its contents
+cache/*.png
+cache/*.jpg
+cache/*.jpeg
+!cache/.gitkeep
