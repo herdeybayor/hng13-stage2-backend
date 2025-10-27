@@ -14,12 +14,34 @@ builder.Services.AddControllers()
     });
 
 // Database configuration
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Railway provides MYSQL_URL in format: mysql://user:password@host:port/database
+var connectionString = Environment.GetEnvironmentVariable("MYSQL_URL");
 
-// Add SSL mode for Railway MySQL if not present
-if (!string.IsNullOrEmpty(connectionString) && !connectionString.Contains("SslMode"))
+// If MYSQL_URL is not available, try individual variables or fallback to config
+if (string.IsNullOrEmpty(connectionString))
 {
-    connectionString += "SslMode=Required;";
+    var mysqlHost = Environment.GetEnvironmentVariable("MYSQLHOST");
+    var mysqlPort = Environment.GetEnvironmentVariable("MYSQLPORT");
+    var mysqlDatabase = Environment.GetEnvironmentVariable("MYSQLDATABASE");
+    var mysqlUser = Environment.GetEnvironmentVariable("MYSQLUSER");
+    var mysqlPassword = Environment.GetEnvironmentVariable("MYSQLPASSWORD");
+
+    if (!string.IsNullOrEmpty(mysqlHost))
+    {
+        connectionString = $"Server={mysqlHost};Port={mysqlPort};Database={mysqlDatabase};User={mysqlUser};Password={mysqlPassword};SslMode=Required;";
+    }
+    else
+    {
+        // Fallback to appsettings
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    }
+}
+else
+{
+    // Parse Railway's mysql:// URL format
+    var uri = new Uri(connectionString);
+    var userInfo = uri.UserInfo.Split(':');
+    connectionString = $"Server={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};User={userInfo[0]};Password={userInfo[1]};SslMode=Required;";
 }
 
 // Log connection attempt (without password)
