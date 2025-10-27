@@ -15,8 +15,20 @@ builder.Services.AddControllers()
 
 // Database configuration
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Add SSL mode for Railway MySQL if not present
+if (!string.IsNullOrEmpty(connectionString) && !connectionString.Contains("SslMode"))
+{
+    connectionString += "SslMode=Required;";
+}
+
+// Log connection attempt (without password)
+var safeConnectionString = connectionString?.Split("Password=")[0] + "Password=***";
+Console.WriteLine($"Attempting to connect with: {safeConnectionString}");
+
+// Use a specific MySQL version instead of AutoDetect to avoid connection issues during startup
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))));
 
 // HttpClient configuration with timeout
 builder.Services.AddHttpClient<ICountryService, CountryService>(client =>
