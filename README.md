@@ -44,6 +44,7 @@ docker-compose up -d
 ```
 
 This will start a MySQL 8.0 container on port 3306 with:
+
 - Database: `country_currency_db`
 - Username: `root`
 - Password: `password`
@@ -70,6 +71,7 @@ dotnet run
 ```
 
 The API will be available at:
+
 - HTTP: `http://localhost:5000`
 - HTTPS: `https://localhost:5001`
 - API Documentation: `https://localhost:5001/scalar/v1`
@@ -77,9 +79,11 @@ The API will be available at:
 ## API Endpoints
 
 ### POST /countries/refresh
+
 Fetch all countries and exchange rates from external APIs, then cache them in the database.
 
 **Response:**
+
 ```json
 {
   "message": "Countries refreshed successfully",
@@ -88,6 +92,7 @@ Fetch all countries and exchange rates from external APIs, then cache them in th
 ```
 
 **Error Response (503):**
+
 ```json
 {
   "error": "External data source unavailable",
@@ -96,9 +101,11 @@ Fetch all countries and exchange rates from external APIs, then cache them in th
 ```
 
 ### GET /countries
+
 Get all countries from the database with optional filters and sorting.
 
 **Query Parameters:**
+
 - `region` - Filter by region (e.g., `Africa`, `Europe`, `Asia`)
 - `currency` - Filter by currency code (e.g., `NGN`, `USD`, `GBP`)
 - `sort` - Sort results:
@@ -110,6 +117,7 @@ Get all countries from the database with optional filters and sorting.
   - `name_desc` - By name descending
 
 **Examples:**
+
 ```bash
 GET /countries?region=Africa
 GET /countries?currency=NGN
@@ -118,6 +126,7 @@ GET /countries?region=Europe&sort=population_desc
 ```
 
 **Response:**
+
 ```json
 [
   {
@@ -136,14 +145,17 @@ GET /countries?region=Europe&sort=population_desc
 ```
 
 ### GET /countries/{name}
+
 Get a single country by name (case-insensitive).
 
 **Example:**
+
 ```bash
 GET /countries/Nigeria
 ```
 
 **Response:**
+
 ```json
 {
   "id": 1,
@@ -160,6 +172,7 @@ GET /countries/Nigeria
 ```
 
 **Error Response (404):**
+
 ```json
 {
   "error": "Country not found"
@@ -167,14 +180,17 @@ GET /countries/Nigeria
 ```
 
 ### DELETE /countries/{name}
+
 Delete a country record by name.
 
 **Example:**
+
 ```bash
 DELETE /countries/Nigeria
 ```
 
 **Response:**
+
 ```json
 {
   "message": "Country 'Nigeria' deleted successfully"
@@ -182,9 +198,11 @@ DELETE /countries/Nigeria
 ```
 
 ### GET /status
+
 Get the total number of countries and last refresh timestamp.
 
 **Response:**
+
 ```json
 {
   "total_countries": 250,
@@ -193,7 +211,9 @@ Get the total number of countries and last refresh timestamp.
 ```
 
 ### GET /countries/image
+
 Serve the generated summary image (PNG) containing:
+
 - Total countries
 - Top 5 countries by estimated GDP
 - Last refresh timestamp
@@ -201,6 +221,7 @@ Serve the generated summary image (PNG) containing:
 **Response:** Image file (image/png)
 
 **Error Response (404):**
+
 ```json
 {
   "error": "Summary image not found"
@@ -213,7 +234,8 @@ Serve the generated summary image (PNG) containing:
 
 1. **Multiple Currencies:** If a country has multiple currencies, only the first one is stored.
 
-2. **No Currencies:** 
+2. **No Currencies:**
+
    - `currency_code` → `null`
    - `exchange_rate` → `null`
    - `estimated_gdp` → `0`
@@ -253,6 +275,7 @@ The application uses the following configuration in `appsettings.json`:
 ```
 
 For production, you can override this using environment variables:
+
 ```bash
 export ConnectionStrings__DefaultConnection="Server=your-host;Port=3306;Database=your-db;User=your-user;Password=your-password;"
 ```
@@ -272,6 +295,7 @@ The API returns consistent JSON error responses:
 - **503 Service Unavailable:** External API unavailable
 
 **Example Error Response:**
+
 ```json
 {
   "error": "Validation failed",
@@ -284,42 +308,47 @@ The API returns consistent JSON error responses:
 ## Database Schema
 
 ### Countries Table
-| Column | Type | Constraints |
-|--------|------|-------------|
-| Id | int | Primary Key, Auto-increment |
-| Name | varchar(255) | Required, Unique |
-| Capital | varchar(255) | Optional |
-| Region | varchar(100) | Optional |
-| Population | bigint | Required |
-| CurrencyCode | varchar(10) | Optional |
-| ExchangeRate | decimal(18,6) | Optional |
-| EstimatedGdp | decimal(20,2) | Optional |
-| FlagUrl | varchar(500) | Optional |
-| LastRefreshedAt | datetime | Required |
+
+| Column          | Type          | Constraints                 |
+| --------------- | ------------- | --------------------------- |
+| Id              | int           | Primary Key, Auto-increment |
+| Name            | varchar(255)  | Required, Unique            |
+| Capital         | varchar(255)  | Optional                    |
+| Region          | varchar(100)  | Optional                    |
+| Population      | bigint        | Required                    |
+| CurrencyCode    | varchar(10)   | Optional                    |
+| ExchangeRate    | decimal(18,6) | Optional                    |
+| EstimatedGdp    | decimal(20,2) | Optional                    |
+| FlagUrl         | varchar(500)  | Optional                    |
+| LastRefreshedAt | datetime      | Required                    |
 
 ### SystemMetadata Table
-| Column | Type | Constraints |
-|--------|------|-------------|
-| Id | int | Primary Key, Auto-increment |
-| KeyName | varchar(100) | Required, Unique |
-| KeyValue | text | Optional |
-| UpdatedAt | datetime | Required |
+
+| Column    | Type         | Constraints                 |
+| --------- | ------------ | --------------------------- |
+| Id        | int          | Primary Key, Auto-increment |
+| KeyName   | varchar(100) | Required, Unique            |
+| KeyValue  | text         | Optional                    |
+| UpdatedAt | datetime     | Required                    |
 
 ## Development
 
 ### Run Migrations
 
 Create a new migration:
+
 ```bash
 dotnet ef migrations add MigrationName
 ```
 
 Apply migrations:
+
 ```bash
 dotnet ef database update
 ```
 
 Remove last migration:
+
 ```bash
 dotnet ef migrations remove
 ```
@@ -345,21 +374,25 @@ dotnet watch run
 ## Docker Commands
 
 Start MySQL:
+
 ```bash
 docker-compose up -d
 ```
 
 Stop MySQL:
+
 ```bash
 docker-compose down
 ```
 
 View MySQL logs:
+
 ```bash
 docker-compose logs -f mysql
 ```
 
 Connect to MySQL:
+
 ```bash
 docker exec -it <container-id> mysql -u root -p
 # Password: password
@@ -404,6 +437,7 @@ hng13-stage2-backend/
 ### Database Connection Issues
 
 1. Ensure MySQL container is running:
+
    ```bash
    docker ps
    ```
@@ -418,6 +452,7 @@ hng13-stage2-backend/
 ### Migration Issues
 
 If migrations fail, try:
+
 ```bash
 dotnet ef database drop
 dotnet ef database update
@@ -462,5 +497,4 @@ MIT License
 
 ## Author
 
-HNG13 Stage 2 Backend Task
-
+[Sherifdeen Adebayo](https://github.com/herdeybayor)
